@@ -31,14 +31,11 @@ function create(tagName, options = {}) {
     Object.assign(element.style, options.styles);
   }
 
-  // Add HTML content
-  if (options.html) {
-    element.innerHTML = options.html;
-  }
-
-  // Add text content
+  // Add HTML or text content
   if (options.text) {
-    element.innerText = options.text;
+    element.textContent = options.text;
+  } else if (options.html) {
+    element.innerHTML = options.html;
   }
 
   // Add a single child
@@ -63,7 +60,7 @@ function create(tagName, options = {}) {
   return element;
 }
 
-// render function
+// render function with chaining support
 function render(parent, child) {
   if (!parent || !child) {
     throw new Error('Parent and child elements are required');
@@ -73,9 +70,9 @@ function render(parent, child) {
   if (Array.isArray(child)) {
     child.forEach(c => parent.appendChild(c));
   } else {
-    // If it's a single child element
     parent.appendChild(child);
   }
+  return parent;
 }
 
 // Function to select an existing element or accept an element directly
@@ -127,14 +124,11 @@ function select(selectorOrElement, options = {}) {
     Object.assign(element.style, options.styles);
   }
 
-  // Add HTML content
-  if (options.html) {
-    element.innerHTML = options.html;
-  }
-
-  // Add text content
+  // Add HTML or text content
   if (options.text) {
-    element.innerText = options.text;
+    element.textContent = options.text;
+  } else if (options.html) {
+    element.innerHTML = options.html;
   }
 
   // Add a single child
@@ -164,7 +158,6 @@ function select(selectorOrElement, options = {}) {
   return element;
 }
 
-
 // Utility function to handle both elements and selectors, with 'all' option
 function selectElements(elementOrSelector, all = false) {
   if (typeof elementOrSelector === 'string') {
@@ -181,6 +174,7 @@ function html(elementOrSelector, htmlContent, all = false) {
       element.innerHTML = htmlContent;
     }
   });
+  return elements.length === 1 ? elements[0] : elements;
 }
 
 // Apply text content
@@ -188,9 +182,10 @@ function text(elementOrSelector, textContent, all = false) {
   const elements = selectElements(elementOrSelector, all);
   elements.forEach(element => {
     if (textContent) {
-      element.innerText = textContent;
+      element.textContent = textContent;
     }
   });
+  return elements.length === 1 ? elements[0] : elements;
 }
 
 // Apply classes
@@ -203,6 +198,7 @@ function className(elementOrSelector, classes, all = false) {
       });
     }
   });
+  return elements.length === 1 ? elements[0] : elements;
 }
 
 // Apply id
@@ -213,6 +209,7 @@ function id(elementOrSelector, elementId, all = false) {
       element.id = elementId;
     }
   });
+  return elements.length === 1 ? elements[0] : elements;
 }
 
 // Apply attributes
@@ -225,6 +222,7 @@ function attr(elementOrSelector, attributes, all = false) {
       });
     }
   });
+  return elements.length === 1 ? elements[0] : elements;
 }
 
 // Apply styles
@@ -232,11 +230,10 @@ function styles(elementOrSelector, styleObject, all = false) {
   const elements = selectElements(elementOrSelector, all);
   elements.forEach(element => {
     if (styleObject) {
-      Object.keys(styleObject).forEach(style => {
-        element.style[style] = styleObject[style];
-      });
+      Object.assign(element.style, styleObject);
     }
   });
+  return elements.length === 1 ? elements[0] : elements;
 }
 
 // Apply single child element
@@ -247,6 +244,7 @@ function appendChild(elementOrSelector, child, all = false) {
       element.appendChild(child);
     }
   });
+  return elements.length === 1 ? elements[0] : elements;
 }
 
 // Apply multiple child elements (renamed to children)
@@ -259,6 +257,7 @@ function children(elementOrSelector, childElements, all = false) {
       });
     }
   });
+  return elements.length === 1 ? elements[0] : elements;
 }
 
 // Apply single event
@@ -269,9 +268,10 @@ function on(elementOrSelector, eventType, callback, all = false) {
       element.addEventListener(eventType, callback);
     }
   });
+  return elements.length === 1 ? elements[0] : elements;
 }
 
-// Apply multiple events (new function)
+// Apply multiple events
 function events(elementOrSelector, eventObj, all = false) {
   const elements = selectElements(elementOrSelector, all);
   elements.forEach(element => {
@@ -281,4 +281,39 @@ function events(elementOrSelector, eventObj, all = false) {
       });
     }
   });
+  return elements.length === 1 ? elements[0] : elements;
+}
+
+// Event delegation utility
+function delegate(parentSelector, childSelector, eventType, callback) {
+  document.querySelector(parentSelector).addEventListener(eventType, function(event) {
+    if (event.target.matches(childSelector)) {
+      callback.call(event.target, event);
+    }
+  });
+}
+
+// Class manipulation utilities
+function toggleClass(elementOrSelector, className, all = false) {
+  const elements = selectElements(elementOrSelector, all);
+  elements.forEach(element => {
+    element.classList.toggle(className);
+  });
+  return elements.length === 1 ? elements[0] : elements;
+}
+
+function removeClass(elementOrSelector, className, all = false) {
+  const elements = selectElements(elementOrSelector, all);
+  elements.forEach(element => {
+    element.classList.remove(className);
+  });
+  return elements.length === 1 ? elements[0] : elements;
+}
+
+function replaceClass(elementOrSelector, oldClass, newClass, all = false) {
+  const elements = selectElements(elementOrSelector, all);
+  elements.forEach(element => {
+    element.classList.replace(oldClass, newClass);
+  });
+  return elements.length === 1 ? elements[0] : elements;
 }
