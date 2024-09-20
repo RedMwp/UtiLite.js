@@ -169,3 +169,126 @@ function select(selectorOrElement, options = {}) {
 
   return element;
 }
+
+
+// Utility function to handle both elements and selectors, with 'all' option
+function selectElements(elementOrSelector, all = false) {
+  if (typeof elementOrSelector === 'string') {
+    return all ? document.querySelectorAll(elementOrSelector) : [document.querySelector(elementOrSelector)];
+  }
+  return [elementOrSelector];
+}
+
+// Apply HTML content
+function html(elementOrSelector, htmlContent, all = false) {
+  const elements = selectElements(elementOrSelector, all);
+  elements.forEach(element => {
+    if (htmlContent) {
+      element.innerHTML = htmlContent;
+    }
+  });
+}
+
+// Apply text content
+function text(elementOrSelector, textContent, all = false) {
+  const elements = selectElements(elementOrSelector, all);
+  elements.forEach(element => {
+    if (textContent) {
+      element.innerText = textContent;
+    }
+  });
+}
+
+// Apply classes
+function className(elementOrSelector, classes, all = false) {
+  const elements = selectElements(elementOrSelector, all);
+  elements.forEach(element => {
+    if (classes) {
+      classes.split(' ').forEach(name => {
+        element.classList.add(name);
+      });
+    }
+  });
+}
+
+// Apply id
+function id(elementOrSelector, elementId, all = false) {
+  const elements = selectElements(elementOrSelector, all);
+  elements.forEach(element => {
+    if (elementId) {
+      element.id = elementId;
+    }
+  });
+}
+
+// Apply attributes
+function attr(elementOrSelector, attributes, all = false) {
+  const elements = selectElements(elementOrSelector, all);
+  elements.forEach(element => {
+    if (attributes) {
+      attributes.forEach(attribute => {
+        element.setAttribute(attribute.name, attribute.value);
+      });
+    }
+  });
+}
+
+// Apply styles
+function styles(elementOrSelector, styleObject, all = false) {
+  const elements = selectElements(elementOrSelector, all);
+  elements.forEach(element => {
+    if (styleObject) {
+      Object.keys(styleObject).forEach(style => {
+        element.style[style] = styleObject[style];
+      });
+    }
+  });
+}
+
+// Apply single child element
+function appendChild(elementOrSelector, child, all = false) {
+  const elements = selectElements(elementOrSelector, all);
+  elements.forEach(element => {
+    if (child) {
+      element.appendChild(child);
+    }
+  });
+}
+
+// Apply multiple child elements (renamed to children)
+function children(elementOrSelector, childElements, all = false) {
+  const elements = selectElements(elementOrSelector, all);
+  elements.forEach(element => {
+    if (childElements) {
+      childElements.forEach(child => {
+        element.appendChild(child);
+      });
+    }
+  });
+}
+
+// Apply single event
+function on(elementOrSelector, eventType, callback, all = false) {
+  const elements = selectElements(elementOrSelector, all);
+  elements.forEach(element => {
+    if (eventType && callback) {
+      element.addEventListener(eventType, callback);
+    }
+  });
+}
+
+// Apply multiple events (new function)
+function events(elementOrSelector, eventObj, all = false) {
+  const elements = selectElements(elementOrSelector, all);
+  elements.forEach(element => {
+    if (eventObj) {
+      Object.keys(eventObj).forEach(eventType => {
+        element.addEventListener(eventType, eventObj[eventType]);
+      });
+    }
+  });
+}
+
+on('p','click',(e)=>{
+  alert(e.target)
+})
