@@ -69,23 +69,18 @@ function create(tagName, options = {}) {
   return element;
 }
 
-
-let main = create('div',{
-  className:'red and blue',
-  events:[['click',(e)=>{
-    console.log(e.target)
-  }],['mouseover',()=>{
-    console.log('mouse ovet')
-  }]],
-  html:`<button>click me </button>`,
-  styles:{
-    background:'red'
+function render(parent, child) {
+  if (!parent || !child) {
+    throw new Error('Parent and child elements are required');
   }
-})
+
+  // If 'child' is an array of children
+  if (Array.isArray(child)) {
+    child.forEach(c => parent.appendChild(c));
+  } else {
+    // If it's a single child element
+    parent.appendChild(child);
+  }
+}
 
 
-
-
-
-console.log(main)
-document.body.appendChild(main);
