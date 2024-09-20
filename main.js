@@ -1,5 +1,4 @@
 function create(tagName, options = {}) {
-
   let element = document.createElement(tagName);
 
   // Add CSS classes to element
@@ -54,16 +53,11 @@ function create(tagName, options = {}) {
     });
   }
 
-  // Add simple event using the `on` syntax
-  if (options.on) {
-    element.addEventListener(options.on[0], options.on[1]);
-  }
-
-  // Add multiple events using the same syntax for `events`
+  // Add events using the new syntax
   if (options.events) {
-    options.events.forEach(event => {
-      element.addEventListener(event[0], event[1]);
-    });
+    for (let event in options.events) {
+      element.addEventListener(event, options.events[event]);
+    }
   }
 
   return element;
@@ -288,7 +282,3 @@ function events(elementOrSelector, eventObj, all = false) {
     }
   });
 }
-
-on('p','click',(e)=>{
-  alert(e.target)
-})
