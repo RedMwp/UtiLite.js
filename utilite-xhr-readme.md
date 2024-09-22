@@ -181,5 +181,3 @@ The `waiting` option allows you to display a loading indicator while the request
 The `utilite-xhr.js` module simplifies making AJAX requests in your applications, offering flexibility and ease of use. Customize it further to fit your project needs!
 
 --- 
-
-Feel free to adapt or expand this documentation based on any specific features or requirements you may have!
